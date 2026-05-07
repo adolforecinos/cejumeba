@@ -3,6 +3,9 @@ set -e
 
 echo "Base de datos disponible"
 
+echo "Generando cliente Prisma..."
+npx prisma generate
+
 echo "Ejecutando migraciones..."
 npx prisma migrate deploy
 
