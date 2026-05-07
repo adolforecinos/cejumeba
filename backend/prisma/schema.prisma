@@ -1,0 +1,184 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ADMINISTRADOR
+  DIRECTOR
+  DOCENTE
+  SECRETARIA
+}
+
+enum EstadoUsuario {
+  ACTIVO
+  INACTIVO
+}
+
+enum EstadoEstudiante {
+  ACTIVO
+  INACTIVO
+  EGRESADO
+}
+
+enum EstadoPeriodo {
+  ABIERTO
+  CERRADO
+}
+
+enum EstadoCurso {
+  ACTIVO
+  INACTIVO
+}
+
+enum TipoActividad {
+  TAREA
+  EXAMEN
+  PROYECTO
+  LABORATORIO
+  PARTICIPACION
+}
+
+model Usuario {
+  id               String          @id @default(uuid())
+  nombre           String
+  correo           String          @unique
+  password         String
+  rol              Rol
+  estado           EstadoUsuario   @default(ACTIVO)
+  ultimoAcceso     DateTime?
+  cursos           Curso[]         @relation("DocenteCurso")
+  notasRegistradas Nota[]          @relation("NotaRegistradaPor")
+  historialNotas   HistorialNota[] @relation("HistorialModificadoPor")
+  auditorias       Auditoria[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Estudiante {
+  id              String           @id @default(uuid())
+  codigo          String           @unique
+  nombreCompleto  String
+  grado           String
+  seccion         String
+  fechaNacimiento DateTime?
+  encargado       String?
+  telefono        String?
+  estado          EstadoEstudiante @default(ACTIVO)
+  observaciones   String?
+  notas           Nota[]
+  matriculas      Matricula[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model PeriodoAcademico {
+  id           String        @id @default(uuid())
+  nombre       String
+  cicloEscolar String
+  fechaInicio  DateTime
+  fechaCierre  DateTime
+  estado       EstadoPeriodo @default(ABIERTO)
+  cursos       Curso[]
+  actividades  ActividadEvaluativa[]
+  matriculas   Matricula[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Curso {
+  id          String              @id @default(uuid())
+  codigo      String              @unique
+  nombre      String
+  grado       String
+  seccion     String
+  docenteId   String
+  docente     Usuario             @relation("DocenteCurso", fields: [docenteId], references: [id])
+  periodoId   String
+  periodo     PeriodoAcademico    @relation(fields: [periodoId], references: [id])
+  estado      EstadoCurso         @default(ACTIVO)
+  actividades ActividadEvaluativa[]
+  matriculas  Matricula[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model Matricula {
+  id           String           @id @default(uuid())
+  estudianteId String
+  estudiante   Estudiante       @relation(fields: [estudianteId], references: [id])
+  cursoId      String
+  curso        Curso            @relation(fields: [cursoId], references: [id])
+  periodoId    String
+  periodo      PeriodoAcademico @relation(fields: [periodoId], references: [id])
+  createdAt    DateTime         @default(now())
+
+  @@unique([estudianteId, cursoId, periodoId])
+}
+
+model ActividadEvaluativa {
+  id          String           @id @default(uuid())
+  cursoId     String
+  curso       Curso            @relation(fields: [cursoId], references: [id])
+  periodoId   String
+  periodo     PeriodoAcademico @relation(fields: [periodoId], references: [id])
+  nombre      String
+  tipo        TipoActividad
+  fecha       DateTime
+  ponderacion Float
+  descripcion String?
+  notas       Nota[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Nota {
+  id              String              @id @default(uuid())
+  estudianteId    String
+  estudiante      Estudiante          @relation(fields: [estudianteId], references: [id])
+  actividadId     String
+  actividad       ActividadEvaluativa @relation(fields: [actividadId], references: [id])
+  valor           Float
+  registradoPorId String
+  registradoPor   Usuario             @relation("NotaRegistradaPor", fields: [registradoPorId], references: [id])
+  historial       HistorialNota[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@unique([estudianteId, actividadId])
+}
+
+model HistorialNota {
+  id              String   @id @default(uuid())
+  notaId          String
+  nota            Nota     @relation(fields: [notaId], references: [id])
+  valorAnterior   Float
+  valorNuevo      Float
+  modificadoPorId String
+  modificadoPor   Usuario  @relation("HistorialModificadoPor", fields: [modificadoPorId], references: [id])
+  createdAt       DateTime @default(now())
+}
+
+model Auditoria {
+  id        String   @id @default(uuid())
+  usuarioId String?
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+  accion    String
+  modulo    String
+  detalle   String?
+  ip        String?
+  createdAt DateTime @default(now())
+}
+
+model Configuracion {
+  id                    String   @id @default(uuid())
+  nombreInstitucion     String   @default("Instituto CEJUMEVA")
+  cicloEscolarActivo    String   @default("2024")
+  notaMinimaAprobatoria Float    @default(60)
+  updatedAt             DateTime @updatedAt
+}

@@ -1,0 +1,56 @@
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cejumeva_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cejumeva
+      POSTGRES_USER: cejumeva_user
+      POSTGRES_PASSWORD: cejumeva_2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cejumeva_user -d cejumeva"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cejumeva_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://cejumeva_user:cejumeva_2024@db:5432/cejumeva
+      JWT_SECRET: cejumeva_jwt_super_secret_2024
+      PORT: 4000
+      NODE_ENV: development
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cejumeva_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+
+volumes:
+  postgres_data:
