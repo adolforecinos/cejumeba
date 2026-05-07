@@ -7,7 +7,7 @@ echo "Generando cliente Prisma..."
 npx prisma generate
 
 echo "Ejecutando migraciones..."
-npx prisma migrate deploy
+PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK=1 npx prisma migrate deploy
 
 if [ "$RUN_SEED" = "true" ]; then
   echo "Poblando base de datos con datos de prueba..."
