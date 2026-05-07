@@ -34,6 +34,7 @@ services:
       PORT: 4000
       NODE_ENV: development
       RUN_SEED: "true"
+      SKIP_MIGRATIONS: "false"
     ports:
       - "4000:4000"
     volumes:
