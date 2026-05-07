@@ -49,6 +49,10 @@ export default function UsuariosPage() {
   }
 
   const onSubmit = async (data: Form) => {
+    if (!editing && !data.password) {
+      toast.error('La contraseña es requerida')
+      return
+    }
     const payload: Partial<Usuario> & { password?: string } = { nombre: data.nombre, correo: data.correo, rol: data.rol }
     if (data.password) payload.password = data.password
     try {

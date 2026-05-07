@@ -17,10 +17,16 @@ import UsuariosPage      from './pages/usuarios/UsuariosPage'
 import AuditoriaPage     from './pages/auditoria/AuditoriaPage'
 import ConfiguracionPage from './pages/configuracion/ConfiguracionPage'
 import Unauthorized      from './pages/Unauthorized'
+import type { Rol } from './types'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const auth = useAuthStore()
   return auth.isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+}
+
+function RoleRoute({ children, roles }: { children: React.ReactNode; roles: Rol[] }) {
+  const { user } = useAuthStore()
+  return user && roles.includes(user.rol) ? <>{children}</> : <Navigate to="/unauthorized" replace />
 }
 
 export default function App() {
@@ -31,18 +37,18 @@ export default function App() {
       <Route path="/" element={<PrivateRoute><AppLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard"      element={<DashboardPage />} />
-        <Route path="estudiantes"    element={<EstudiantesPage />} />
-        <Route path="estudiantes/:id" element={<EstudianteDetail />} />
-        <Route path="cursos"         element={<CursosPage />} />
-        <Route path="periodos"       element={<PeriodosPage />} />
-        <Route path="actividades"    element={<ActividadesPage />} />
-        <Route path="notas"          element={<NotasPage />} />
-        <Route path="boletines"      element={<BoletinesPage />} />
-        <Route path="historial"      element={<HistorialPage />} />
-        <Route path="reportes"       element={<ReportesPage />} />
-        <Route path="usuarios"       element={<UsuariosPage />} />
-        <Route path="auditoria"      element={<AuditoriaPage />} />
-        <Route path="configuracion"  element={<ConfiguracionPage />} />
+        <Route path="estudiantes"    element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA']}><EstudiantesPage /></RoleRoute>} />
+        <Route path="estudiantes/:id" element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA']}><EstudianteDetail /></RoleRoute>} />
+        <Route path="cursos"         element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA']}><CursosPage /></RoleRoute>} />
+        <Route path="periodos"       element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR']}><PeriodosPage /></RoleRoute>} />
+        <Route path="actividades"    element={<RoleRoute roles={['ADMINISTRADOR','DOCENTE']}><ActividadesPage /></RoleRoute>} />
+        <Route path="notas"          element={<RoleRoute roles={['ADMINISTRADOR','DOCENTE']}><NotasPage /></RoleRoute>} />
+        <Route path="boletines"      element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA']}><BoletinesPage /></RoleRoute>} />
+        <Route path="historial"      element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA']}><HistorialPage /></RoleRoute>} />
+        <Route path="reportes"       element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR']}><ReportesPage /></RoleRoute>} />
+        <Route path="usuarios"       element={<RoleRoute roles={['ADMINISTRADOR']}><UsuariosPage /></RoleRoute>} />
+        <Route path="auditoria"      element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR']}><AuditoriaPage /></RoleRoute>} />
+        <Route path="configuracion"  element={<RoleRoute roles={['ADMINISTRADOR']}><ConfiguracionPage /></RoleRoute>} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

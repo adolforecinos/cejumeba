@@ -1,7 +1,8 @@
 import { Menu, Moon, Sun, Bell } from 'lucide-react'
 import { useAppStore }  from '../../store/app.store'
 import { useAuthStore } from '../../store/auth.store'
-import { useLocation }  from 'react-router-dom'
+import { useLocation, useNavigate }  from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const titles: Record<string, string> = {
   '/dashboard':    'Dashboard',
@@ -22,6 +23,7 @@ export default function Navbar() {
   const { toggleSidebar, toggleDarkMode, darkMode } = useAppStore()
   const { user } = useAuthStore()
   const location = useLocation()
+  const navigate = useNavigate()
   const title = titles[location.pathname] ?? 'CEJUMEVA Académico'
 
   const rolColor: Record<string, string> = {
@@ -51,7 +53,14 @@ export default function Navbar() {
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
-        <button className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400 transition-colors relative">
+        <button
+          onClick={() => {
+            if (user?.rol === 'ADMINISTRADOR' || user?.rol === 'DIRECTOR') navigate('/auditoria')
+            else toast('Sin notificaciones nuevas')
+          }}
+          className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400 transition-colors relative"
+          title="Notificaciones"
+        >
           <Bell size={18} />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
         </button>

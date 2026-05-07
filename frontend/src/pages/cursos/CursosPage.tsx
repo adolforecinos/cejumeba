@@ -30,6 +30,7 @@ const GRADOS = ['1ro Primaria','2do Primaria','3ro Primaria','4to Primaria','5to
 export default function CursosPage() {
   const { user } = useAuthStore()
   const canManage = user?.rol === 'ADMINISTRADOR'
+  const canMatricular = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SECRETARIA'
   const [cursos,   setCursos]   = useState<Curso[]>([])
   const [periodos, setPeriodos] = useState<PeriodoAcademico[]>([])
   const [docentes, setDocentes] = useState<Usuario[]>([])
@@ -139,7 +140,7 @@ export default function CursosPage() {
               ]}
               actions={row => (
                 <div className="flex items-center justify-end gap-1">
-                  {canManage && <button onClick={() => openMatricula(row as unknown as Curso)} title="Asignar estudiantes" className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 transition-colors"><Users size={15} /></button>}
+                  {canMatricular && <button onClick={() => openMatricula(row as unknown as Curso)} title="Asignar estudiantes" className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 transition-colors"><Users size={15} /></button>}
                   {canManage && <button onClick={() => openEdit(row as unknown as Curso)} title="Editar" className="p-1.5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 transition-colors"><Edit2 size={15} /></button>}
                 </div>
               )}

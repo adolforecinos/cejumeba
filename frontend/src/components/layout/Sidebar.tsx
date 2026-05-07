@@ -20,7 +20,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { to: '/dashboard',     label: 'Dashboard',       icon: <LayoutDashboard size={18} />, roles: ['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA'] },
   { to: '/estudiantes',   label: 'Estudiantes',     icon: <Users size={18} />,           roles: ['ADMINISTRADOR','DIRECTOR','SECRETARIA','DOCENTE'] },
-  { to: '/cursos',        label: 'Cursos',          icon: <BookOpen size={18} />,        roles: ['ADMINISTRADOR','DIRECTOR','DOCENTE'] },
+  { to: '/cursos',        label: 'Cursos',          icon: <BookOpen size={18} />,        roles: ['ADMINISTRADOR','DIRECTOR','DOCENTE','SECRETARIA'] },
   { to: '/periodos',      label: 'Periodos',        icon: <Calendar size={18} />,        roles: ['ADMINISTRADOR','DIRECTOR'] },
   { to: '/actividades',   label: 'Actividades',     icon: <ClipboardList size={18} />,   roles: ['ADMINISTRADOR','DOCENTE'] },
   { to: '/notas',         label: 'Registro Notas',  icon: <FileText size={18} />,        roles: ['ADMINISTRADOR','DOCENTE'] },
