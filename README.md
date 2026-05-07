@@ -1,146 +1,137 @@
-# CEJUMEVA Académico
-## Sistema Web de Gestión Académica Escolar
+# CEJUMEVA Academico
 
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue)](https://docker.com)
-[![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6)](https://typescriptlang.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://postgresql.org)
+Sistema web de gestion academica escolar.
 
----
-
-## 🚀 Inicio Rápido
+## Inicio Rapido
 
 ```bash
-# Clonar y entrar al directorio
+# Entrar al proyecto
 cd cejumeva
 
-# Levantar todo con Docker
+# Levantar frontend, backend y base de datos local
 docker compose up --build
 ```
 
-Luego abrir: **http://localhost:5173**
+Luego abrir:
 
----
+```txt
+http://localhost:5173
+```
 
-## 👤 Usuarios de Prueba
+## Usuarios De Prueba
 
-| Rol | Correo | Contraseña |
+Estos usuarios existen cuando se carga el seed local con `RUN_SEED=true`.
+
+| Rol | Correo | Contrasena |
 |---|---|---|
 | Administrador | admin@cejumeva.edu.gt | 123456 |
 | Director | director@cejumeva.edu.gt | 123456 |
 | Docente | docente@cejumeva.edu.gt | 123456 |
 | Secretaria | secretaria@cejumeva.edu.gt | 123456 |
 
----
+## Modulos Del Sistema
 
-## 📦 Módulos del Sistema
-
-| Módulo | Descripción | Roles |
+| Modulo | Descripcion | Roles |
 |---|---|---|
-| Dashboard | KPIs, gráficos y accesos rápidos | Todos |
+| Dashboard | KPIs, graficos y accesos rapidos | Todos |
 | Estudiantes | CRUD completo de estudiantes | Admin, Secretaria |
-| Cursos | Gestión de cursos y asignación docente | Admin, Docente |
-| Periodos | Periodos académicos (abrir/cerrar) | Admin |
+| Cursos | Gestion de cursos y asignacion docente | Admin, Docente |
+| Periodos | Periodos academicos, abrir y cerrar | Admin |
 | Actividades | Actividades evaluativas por curso | Docente |
-| Notas | Registro y edición de calificaciones | Docente |
-| Boletines | Generación e impresión de boletines | Todos |
-| Historial | Historial académico por estudiante | Todos |
-| Reportes | Reportes con gráficos y filtros | Director, Admin |
-| Usuarios | Gestión de usuarios y roles | Admin |
-| Auditoría | Log de eventos del sistema | Admin |
-| Configuración | Parámetros institucionales | Admin |
+| Notas | Registro y edicion de calificaciones | Docente |
+| Boletines | Generacion e impresion de boletines | Segun permisos |
+| Historial | Historial academico por estudiante | Todos |
+| Reportes | Reportes con graficos y filtros | Director, Admin |
+| Usuarios | Gestion de usuarios y roles | Admin |
+| Auditoria | Log de eventos del sistema | Admin |
+| Configuracion | Parametros institucionales | Admin |
 
----
+## Arquitectura
 
-## 🏗️ Arquitectura
-
-```
-Frontend (React+Vite)  :5173
-       ↓ HTTP/REST
-Backend (Node+Express) :4000
-       ↓ Prisma ORM
-PostgreSQL 16          :5432
+```txt
+Frontend (React + Vite)  :5173
+       -> HTTP/REST
+Backend (Node + Express) :4000
+       -> Prisma ORM
+PostgreSQL 16            :5432
 ```
 
----
+Prisma si se usa actualmente. El backend lo usa para:
 
-## 🛠️ Tecnologías
+- definir el modelo de datos en `backend/prisma/schema.prisma`
+- ejecutar migraciones con `npx prisma migrate deploy`
+- consultar PostgreSQL desde los controladores del backend
+- cargar datos de prueba con `backend/prisma/seed.ts`
 
-**Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts, Zustand, React Hook Form + Zod, Lucide React
+## Tecnologias
 
-**Backend:** Node.js 20, Express, Prisma ORM, JWT, bcrypt, Zod
+Frontend: React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Recharts, Zustand, React Hook Form, Zod y Lucide React.
 
-**Base de Datos:** PostgreSQL 16
+Backend: Node.js 20, Express, Prisma ORM, JWT, bcrypt y Zod.
 
-**Infraestructura:** Docker, Docker Compose
+Base de datos: PostgreSQL 16.
 
----
+Infraestructura local: Docker y Docker Compose.
 
-## 📁 Estructura del Proyecto
+## Estructura Del Proyecto
 
-```
+```txt
 cejumeva/
-├── docker-compose.yml
-├── README.md
-├── backend/
-│   ├── Dockerfile
-│   ├── package.json
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   └── seed.ts
-│   └── src/
-│       ├── index.ts
-│       ├── routes/
-│       ├── controllers/
-│       ├── middlewares/
-│       └── utils/
-└── frontend/
-    ├── Dockerfile
-    ├── package.json
-    └── src/
-        ├── components/
-        ├── pages/
-        ├── routes/
-        ├── services/
-        ├── store/
-        ├── types/
-        └── utils/
+|-- docker-compose.yml
+|-- README.md
+|-- backend/
+|   |-- Dockerfile
+|   |-- package.json
+|   |-- prisma/
+|   |   |-- schema.prisma
+|   |   `-- seed.ts
+|   `-- src/
+|       |-- index.ts
+|       |-- routes/
+|       |-- controllers/
+|       |-- middlewares/
+|       `-- utils/
+`-- frontend/
+    |-- Dockerfile
+    |-- package.json
+    `-- src/
+        |-- components/
+        |-- pages/
+        |-- services/
+        |-- store/
+        `-- types/
 ```
 
----
+## Reglas Del Sistema
 
-## 📋 Reglas del Sistema
+- Nota minima aprobatoria: 60.
+- Promedio mayor o igual a 70: aprobado.
+- Promedio entre 60 y 69: en riesgo.
+- Promedio menor a 60: reprobado.
+- Las notas solo se registran en periodos abiertos.
+- La suma de ponderaciones por curso no puede exceder 100%.
 
-- Nota mínima aprobatoria: **60**
-- Promedio ≥ 70 → **Aprobado** 🟢
-- Promedio 60–69 → **En Riesgo** 🟡
-- Promedio < 60 → **Reprobado** 🔴
-- Las notas solo se registran en **periodos abiertos**
-- La suma de ponderaciones por curso **no puede exceder 100%**
-
----
-
-## 🔧 Comandos Útiles
+## Comandos Utiles
 
 ```bash
 # Ver logs del backend
 docker compose logs backend -f
 
-# Resetear base de datos
+# Resetear base de datos local
 docker compose exec backend npx prisma migrate reset --force
 
-# Ver base de datos
+# Ver base de datos local
 docker compose exec db psql -U cejumeva_user -d cejumeva
 ```
 
----
-
 ## Despliegue
 
-El proyecto mantiene dos modos de trabajo:
+El destino final de despliegue todavia no esta cerrado. Por ahora el proyecto esta preparado para dos escenarios:
 
 - Local con Docker: usa `docker compose up --build` y carga datos de prueba porque `RUN_SEED=true`.
-- Producción: usa variables de entorno reales y debe dejar `RUN_SEED=false` para no borrar datos.
+- Pruebas en servicios cloud: usa variables de entorno reales y debe dejar `RUN_SEED=false` para no borrar datos.
+
+Cuando se decida VPS, la configuracion recomendada sera correr frontend, backend, PostgreSQL y proxy HTTPS con Docker Compose.
 
 Variables del backend:
 
@@ -158,7 +149,7 @@ Variables del frontend:
 VITE_API_URL=https://your-backend-domain.com/api
 ```
 
-Comandos sugeridos en producción para backend:
+Comandos sugeridos para backend:
 
 ```bash
 npm install
@@ -168,7 +159,7 @@ npm run build
 npm start
 ```
 
-Comandos sugeridos en producción para frontend:
+Comandos sugeridos para frontend:
 
 ```bash
 npm install
