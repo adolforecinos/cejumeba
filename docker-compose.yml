@@ -29,6 +29,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://cejumeva_user:cejumeva_2024@db:5432/cejumeva
+      DIRECT_URL: postgresql://cejumeva_user:cejumeva_2024@db:5432/cejumeva
       JWT_SECRET: cejumeva_jwt_super_secret_2024
       PORT: 4000
       NODE_ENV: development
