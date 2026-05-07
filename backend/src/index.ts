@@ -1,4 +1,5 @@
 import express from 'express'
+import 'express-async-errors'
 import cors from 'cors'
 import { authRouter }         from './routes/auth.routes'
 import { estudiantesRouter }  from './routes/estudiantes.routes'
