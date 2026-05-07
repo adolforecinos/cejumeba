@@ -1,6 +1,7 @@
 import express from 'express'
 import 'express-async-errors'
 import cors from 'cors'
+import { PrismaClient } from '@prisma/client'
 import { authRouter }         from './routes/auth.routes'
 import { estudiantesRouter }  from './routes/estudiantes.routes'
 import { cursosRouter }       from './routes/cursos.routes'
@@ -15,12 +16,26 @@ import { configuracionRouter} from './routes/configuracion.routes'
 
 const app  = express()
 const PORT = process.env.PORT || 4000
+const prisma = new PrismaClient()
+
+process.on('unhandledRejection', err => {
+  console.error('Unhandled rejection:', err)
+})
+
+process.on('uncaughtException', err => {
+  console.error('Uncaught exception:', err)
+})
 
 app.use(cors({ origin: '*', credentials: true }))
 app.use(express.json())
 
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date() }))
+
+app.get('/health/db', async (_req, res) => {
+  await prisma.$queryRaw`SELECT 1`
+  res.json({ status: 'ok', database: 'connected', timestamp: new Date() })
+})
 
 // Routes
 app.use('/api/auth',          authRouter)
