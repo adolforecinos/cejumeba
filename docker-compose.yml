@@ -32,6 +32,7 @@ services:
       JWT_SECRET: cejumeva_jwt_super_secret_2024
       PORT: 4000
       NODE_ENV: development
+      RUN_SEED: "true"
     ports:
       - "4000:4000"
     volumes:

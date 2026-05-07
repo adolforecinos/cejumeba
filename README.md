@@ -132,3 +132,45 @@ docker compose exec backend npx prisma migrate reset --force
 # Ver base de datos
 docker compose exec db psql -U cejumeva_user -d cejumeva
 ```
+
+---
+
+## Despliegue
+
+El proyecto mantiene dos modos de trabajo:
+
+- Local con Docker: usa `docker compose up --build` y carga datos de prueba porque `RUN_SEED=true`.
+- Producción: usa variables de entorno reales y debe dejar `RUN_SEED=false` para no borrar datos.
+
+Variables del backend:
+
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DATABASE
+JWT_SECRET=change_this_to_a_long_random_secret
+PORT=4000
+NODE_ENV=production
+RUN_SEED=false
+```
+
+Variables del frontend:
+
+```env
+VITE_API_URL=https://your-backend-domain.com/api
+```
+
+Comandos sugeridos en producción para backend:
+
+```bash
+npm install
+npx prisma generate
+npx prisma migrate deploy
+npm run build
+npm start
+```
+
+Comandos sugeridos en producción para frontend:
+
+```bash
+npm install
+npm run build
+```
