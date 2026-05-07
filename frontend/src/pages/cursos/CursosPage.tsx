@@ -29,8 +29,8 @@ const GRADOS = ['1ro Primaria','2do Primaria','3ro Primaria','4to Primaria','5to
 
 export default function CursosPage() {
   const { user } = useAuthStore()
-  const canManage = user?.rol === 'ADMINISTRADOR'
-  const canMatricular = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SECRETARIA'
+  const canManage = user?.rol === 'DIRECTOR'
+  const canMatricular = user?.rol === 'SECRETARIA'
   const [cursos,   setCursos]   = useState<Curso[]>([])
   const [periodos, setPeriodos] = useState<PeriodoAcademico[]>([])
   const [docentes, setDocentes] = useState<Usuario[]>([])
@@ -57,7 +57,7 @@ export default function CursosPage() {
       ])
       setCursos(c)
       setPeriodos(p)
-      setDocentes(u.filter(u => u.rol === 'DOCENTE' || u.rol === 'ADMINISTRADOR'))
+      setDocentes(u.filter(u => u.rol === 'DOCENTE'))
     } catch { toast.error('Error cargando datos') }
     finally { setLoading(false) }
   }, [canManage])

@@ -22,7 +22,7 @@ type Form = z.infer<typeof schema>
 
 export default function PeriodosPage() {
   const { user } = useAuthStore()
-  const canManage = user?.rol === 'ADMINISTRADOR'
+  const canManage = user?.rol === 'DIRECTOR'
   const [periodos,  setPeriodos]  = useState<PeriodoAcademico[]>([])
   const [loading,   setLoading]   = useState(true)
   const [modal,     setModal]     = useState(false)

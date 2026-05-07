@@ -32,7 +32,7 @@ const GRADOS = ['1ro Primaria','2do Primaria','3ro Primaria','4to Primaria','5to
 export default function EstudiantesPage() {
   const navigate  = useNavigate()
   const { user } = useAuthStore()
-  const canManage = user?.rol === 'ADMINISTRADOR' || user?.rol === 'SECRETARIA'
+  const canManage = user?.rol === 'SECRETARIA'
   const [data,    setData]    = useState<Estudiante[]>([])
   const [loading, setLoading] = useState(true)
   const [modal,   setModal]   = useState(false)

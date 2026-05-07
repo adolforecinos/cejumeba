@@ -37,14 +37,14 @@ export default function App() {
       <Route path="/" element={<PrivateRoute><AppLayout /></PrivateRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard"      element={<DashboardPage />} />
-        <Route path="estudiantes"    element={<RoleRoute roles={['DIRECTOR','DOCENTE','SECRETARIA']}><EstudiantesPage /></RoleRoute>} />
-        <Route path="estudiantes/:id" element={<RoleRoute roles={['DIRECTOR','DOCENTE','SECRETARIA']}><EstudianteDetail /></RoleRoute>} />
+        <Route path="estudiantes"    element={<RoleRoute roles={['DIRECTOR','SECRETARIA']}><EstudiantesPage /></RoleRoute>} />
+        <Route path="estudiantes/:id" element={<RoleRoute roles={['DIRECTOR','SECRETARIA']}><EstudianteDetail /></RoleRoute>} />
         <Route path="cursos"         element={<RoleRoute roles={['DIRECTOR','DOCENTE','SECRETARIA']}><CursosPage /></RoleRoute>} />
-        <Route path="periodos"       element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR']}><PeriodosPage /></RoleRoute>} />
+        <Route path="periodos"       element={<RoleRoute roles={['DIRECTOR']}><PeriodosPage /></RoleRoute>} />
         <Route path="actividades"    element={<RoleRoute roles={['DOCENTE']}><ActividadesPage /></RoleRoute>} />
         <Route path="notas"          element={<RoleRoute roles={['DOCENTE']}><NotasPage /></RoleRoute>} />
-        <Route path="boletines"      element={<RoleRoute roles={['DIRECTOR','DOCENTE','SECRETARIA']}><BoletinesPage /></RoleRoute>} />
-        <Route path="historial"      element={<RoleRoute roles={['DIRECTOR','DOCENTE','SECRETARIA']}><HistorialPage /></RoleRoute>} />
+        <Route path="boletines"      element={<RoleRoute roles={['DIRECTOR','SECRETARIA']}><BoletinesPage /></RoleRoute>} />
+        <Route path="historial"      element={<RoleRoute roles={['DIRECTOR','SECRETARIA']}><HistorialPage /></RoleRoute>} />
         <Route path="reportes"       element={<RoleRoute roles={['DIRECTOR']}><ReportesPage /></RoleRoute>} />
         <Route path="usuarios"       element={<RoleRoute roles={['ADMINISTRADOR']}><UsuariosPage /></RoleRoute>} />
         <Route path="auditoria"      element={<RoleRoute roles={['ADMINISTRADOR','DIRECTOR']}><AuditoriaPage /></RoleRoute>} />
